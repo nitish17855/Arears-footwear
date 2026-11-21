@@ -1,0 +1,111 @@
+// Prisma schema for PostgreSQL
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(CUSTOMER)
+  orders        Order[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Product {
+  id            String           @id @default(uuid())
+  slug          String           @unique
+  name          String
+  tagline       String
+  description   String
+  category      String           // Running, Lifestyle, Basketball, Training
+  basePrice     Float
+  isFeatured    Boolean          @default(false)
+  specs         Json?            // Weight, cushion tech, drop, upper material
+  variants      ProductVariant[]
+  reviews       Review[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model ProductVariant {
+  id            String       @id @default(uuid())
+  productId     String
+  product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  colorName     String       // e.g. "Onyx Black", "Cyber Volt", "Hyper Violet"
+  colorHex      String       // Primary hex code for 3D and UI preview
+  secondaryHex  String?      // Accent color hex
+  size          Float        // US Size: 7.0, 7.5, 8.0, 8.5, etc.
+  sku           String       @unique
+  stockQuantity Int          @default(10)
+  imageUrl      String?
+  orderItems    OrderItem[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([productId])
+  @@index([colorName, size])
+}
+
+model Order {
+  id                 String       @id @default(uuid())
+  userId             String?
+  user               User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestEmail         String?
+  customerName       String
+  shippingAddress    Json         // address, city, state, zip, country
+  status             OrderStatus  @default(PENDING)
+  totalAmount        Float
+  subtotal           Float
+  tax                Float        @default(0)
+  shippingFee        Float        @default(0)
+  discount           Float        @default(0)
+  stripeSessionId    String?
+  items              OrderItem[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model OrderItem {
+  id               String         @id @default(uuid())
+  orderId          String
+  order            Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productVariantId String
+  variant          ProductVariant @relation(fields: [productVariantId], references: [id])
+  productName      String
+  colorName        String
+  size             Float
+  quantity         Int
+  priceAtPurchase  Float
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  authorName  String
+  rating      Int      @default(5)
+  comment     String
+  createdAt   DateTime @default(now())
+}

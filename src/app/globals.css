@@ -1,26 +1,158 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f4fbf7;
+  --foreground: #0f241a;
+  --surface: #ffffff;
+  --surface-border: #d1fae5;
+  --accent-primary: #10b981;
+  --accent-light: #dcfce7;
+  --accent-dark: #047857;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: #86efac;
+  color: #064e3b;
+}
+
+/* Luxury Light Green Glassmorphism */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.18);
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.18), 0 0 20px -5px rgba(52, 211, 153, 0.25);
+}
+
+.glow-mint {
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+}
+
+.text-gradient-forest {
+  background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Light Green Pattern */
+.bg-grid-mint {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(16, 185, 129, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Water Ripple Animations */
+@keyframes waterRipple {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(3.8);
+    opacity: 0;
+  }
+}
+
+.animate-water-ripple {
+  animation: waterRipple 0.85s cubic-bezier(0.1, 0.6, 0.3, 1) forwards;
+}
+
+/* Liquid Bubble Burst */
+@keyframes bubbleBurst {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.3);
+    opacity: 1;
+  }
+  65% {
+    transform: translate3d(var(--bubble-vx), var(--bubble-vy), 0) scale(1.1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(calc(var(--bubble-vx) * 1.25), calc(var(--bubble-vy) - 25px), 0) scale(1.25);
+    opacity: 0;
+  }
+}
+
+.animate-bubble-burst {
+  animation: bubbleBurst 1s cubic-bezier(0.15, 0.7, 0.3, 1) forwards;
+}
+
+/* Ambient Slow Floating Bubbles */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.7;
+  }
+  75% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.animate-float-up {
+  animation: floatUp 16s ease-in-out infinite;
+}
+
+/* Fresh Light Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0fdf4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a7f3d0;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6ee7b7;
 }
